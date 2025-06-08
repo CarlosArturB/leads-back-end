@@ -1,9 +1,12 @@
 import { Router } from 'express';
-import { createUser } from '../services/user';
+import { createUser, getAllUsers } from '../services/user';
 import { createleads, getAllLeads } from './../services/Leads';
 import { createlp, getAllLp } from './../services/lp';
+import { login } from '../controllers/authController';
 
 export const mainRouter = Router();
+
+mainRouter.post('/login', login);
 
 mainRouter.get('/ping', (req, res) => {
     res.json({ pong: true });
@@ -19,10 +22,10 @@ mainRouter.post('/createuser', async (req, res) => {
     res.json(user);
 });
 
-// mainRouter.get('/users', async (req, res) => {
-//     const result = await getAllUsers();
-//     res.json(result);
-// });
+ mainRouter.get('/users', async (req, res) => {
+     const result = await getAllUsers();
+     res.json(result);
+});
 
 //Leads
 mainRouter.post('/createleads', async (req, res) => {
