@@ -1,5 +1,4 @@
 // src/types/express.d.ts
-
 import express from 'express';
 
 declare global {

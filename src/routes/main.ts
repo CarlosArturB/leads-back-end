@@ -3,6 +3,7 @@ import { createUser, getAllUsers } from '../services/user';
 import { createleads, getAllLeads } from './../services/Leads';
 import { createlp, getAllLp } from './../services/lp';
 import { login } from '../controllers/authController';
+import { authenticationFilter } from '../filters/authenticationFilter';
 
 export const mainRouter = Router();
 
@@ -38,7 +39,8 @@ mainRouter.post('/createleads', async (req, res) => {
     res.json(user);
 });
 
-mainRouter.get('/leads', async (req, res) => {
+mainRouter.get('/leads', authenticationFilter, async (req, res) => {
+    console.log(req.headers.authorization);
     const result = await getAllLeads();
     res.json(result);
 });

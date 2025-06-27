@@ -32,9 +32,24 @@ export const loginUser = async ({ email, password }: LoginInput): Promise<LoginR
   if (!isPasswordValid) throw new Error('Usuário ou senha inválidos');
 
   const payload = { userId: user.id, email: user.email, name: user.name };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
+  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1m' });
 
   const { password: _, ...userWithoutPassword } = user;
 
   return { token, user: userWithoutPassword };
 };
+
+export const verifyLoggedUser = async (token: string) => {
+  if (!token) throw new Error('Token não fornecido');
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number; email: string; name: string };
+    const user = await prisma.user.findUnique({ where: { id: decoded.userId } });
+    
+    if (!user) throw new Error('Usuário não encontrado');
+
+    return { ...decoded, user };
+  } catch (error) {
+    throw new Error('Token inválido ou expirado');
+  }
+}
